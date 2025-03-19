@@ -6,6 +6,7 @@ from modules.services.vifo_send_request import VifoSendRequest
 from modules.interfaces.body_webhook import WebhookBody, WebhookData
 from modules.interfaces.header_interface import HeaderInterface
 from modules.common_functions.generate_signature import generate_signature
+from modules.interfaces.body_webhook import WebhookActionName  # Import Enum
 
 load_dotenv()
 
@@ -14,7 +15,7 @@ webhook_service = VifoWebhookService(send_request)
 timestamp = "2025-03-06 12:00:00"
 secret_key = os.getenv("SECRET_KEY")
 
-def create_webhook_body(action_name: str, transaction_id=None, message=None, payment_account=None, note=None, paid_at=None):
+def create_webhook_body(action_name: WebhookActionName, transaction_id=None, message=None, payment_account=None, note=None, paid_at=None):
     body_data = WebhookData(
         id="vmg6q369ndr3b8kz",
         order_number="VF240102001025148",
@@ -26,7 +27,7 @@ def create_webhook_body(action_name: str, transaction_id=None, message=None, pay
         paid_at=paid_at
     )
     return WebhookBody(
-        action_name=action_name,
+        action_name=action_name.value,  
         message=message,
         data=body_data
     )
@@ -41,26 +42,26 @@ def create_headers(body: WebhookBody):
     }
 
 async def test_webhook_seva():
+    
     for action, transaction_id, message in [
-        ("SUCCESS_TRANSFER", "FT240014955", ""),
-        # ("FAILED_TRANSFER", None, "reason fail"),
-        # ("TECHNICAL_ERROR_TRANSFER", None, "<ERROR MESSAGE DEPENDING ON STATUS>")
-         ]:
+        (WebhookActionName.SUCCESS_TRANSFER, "FT240014955", ""),
+        # (WebhookActionName.FAILED_TRANSFER, None, "reason fail"),
+        # (WebhookActionName.TECHNICAL_ERROR_TRANSFER, None, "<ERROR MESSAGE DEPENDING ON STATUS>")
+    ]:
         body = create_webhook_body(action, transaction_id, message, 
-                                payment_account="VFC02001025148",
-                                note="Test webhook",
-                                paid_at="2025-03-06 12:00:00")
+                                   payment_account="VFC02001025148",
+                                   note="Test webhook",
+                                   paid_at="2025-03-06 12:00:00")
         headers = create_headers(body) 
         response = await webhook_service.send_webhook(secret_key, timestamp, headers, body.to_dict())
-        # print(body.to_dict())
-        print(f"Test SEVA {action}:", response)
+        print(f"SEVA {action.value}:", response)
 
 async def test_webhook_reva():
-    body = create_webhook_body("NEW_PAYMENT", "FT240014955")
+    action = WebhookActionName.NEW_PAYMENT
+    body = create_webhook_body(WebhookActionName.NEW_PAYMENT, "FT240014955")
     headers = create_headers(body)  
     response = await webhook_service.send_webhook(secret_key, timestamp, headers, body.to_dict())
-    # print(body.to_dict())
-    print("Test REVA NEW_PAYMENT:", response)
+    print(f"REVA {action.value}:", response)
 
 async def main():
     await test_webhook_seva()

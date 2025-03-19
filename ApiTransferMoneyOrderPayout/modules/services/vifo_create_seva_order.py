@@ -27,7 +27,7 @@ class VifoCreateSevaOrder(VifoCreateSevaOrderInterface):
         ]
 
         for field in required_fields:
-            if not getattr(body, field, None):
+            if not body.get(field):
                 errors.append(f'{field} cannot be empty.')
         return errors
 

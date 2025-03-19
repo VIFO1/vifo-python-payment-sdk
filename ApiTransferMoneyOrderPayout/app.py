@@ -5,7 +5,7 @@ import hmac
 import hashlib
 from datetime import datetime
 from dotenv import load_dotenv
-from modules.interfaces.body_webhook import WebhookBody, WebhookData
+from modules.interfaces.body_webhook import WebhookBody, WebhookData, WebhookActionName
 from modules.common_functions.generate_signature import generate_signature
 load_dotenv()
 
@@ -40,14 +40,17 @@ def vifo_webhook():
     except Exception as e:
         return jsonify({"errors": [str(e)]}), 400
 
-    if body_obj.action_name not in ["NEW_PAYMENT", "SUCCESS_TRANSFER", "FAILED_TRANSFER", "TECHNICAL_ERROR_TRANSFER"]:
+     # Kiểm tra action_name bằng Enum
+    try:
+        action = WebhookActionName(body_obj.action_name)
+    except ValueError:
         return jsonify({"errors": ["Invalid action_name"]}), 400
 
     signature = generate_signature(SECRET_KEY, timestamp, body_obj.to_dict())
 
     if request_signature != signature:
         return jsonify({"errors": ["Invalid signature"]}), 401
-
+    
     print(json.dumps(body_obj.to_dict(), indent=2))
 
     return jsonify({"status": "success"}), 201  

@@ -1,6 +1,13 @@
 from dataclasses import dataclass
 from typing import Optional
+from enum import Enum
 
+class WebhookActionName(Enum):
+    NEW_PAYMENT = "NEW_PAYMENT"
+    SUCCESS_TRANSFER = "SUCCESS_TRANSFER"
+    FAILED_TRANSFER = "FAILED_TRANSFER"
+    TECHNICAL_ERROR_TRANSFER = "TECHNICAL_ERROR_TRANSFER"
+    
 @dataclass
 class WebhookData:
     id: str
