@@ -9,7 +9,7 @@ class VifoCreateSevaOrder(VifoCreateSevaOrderInterface):
     def __init__(self, send_request: VifoSendRequest) -> None:
         self.send_request = send_request
 
-    def _validate_seva_order(self, headers: HeaderInterface, body: BodyCreateSevaOrder) -> List[str]:
+    def validate_seva_order(self, headers: HeaderInterface, body: BodyCreateSevaOrder) -> List[str]:
         errors = []
         if not isinstance(headers, dict):
             errors.append('headers must be a non-empty object')
@@ -27,17 +27,14 @@ class VifoCreateSevaOrder(VifoCreateSevaOrderInterface):
         ]
 
         for field in required_fields:
-            if not body.get(field):
+            if not getattr(body, field, None):
                 errors.append(f'{field} cannot be empty.')
         return errors
 
     async def create_seva_order(self, headers: HeaderInterface, body: BodyCreateSevaOrder) -> Dict[str, Any]:
-        errors = self._validate_seva_order(headers, body)
+        errors = self.validate_seva_order(headers, body)
         if errors:
             return {"errors": errors}
         endpoint = '/v2/finance'
 
         return await self.send_request.send_request('POST', endpoint, headers, body)
-    
-
-    

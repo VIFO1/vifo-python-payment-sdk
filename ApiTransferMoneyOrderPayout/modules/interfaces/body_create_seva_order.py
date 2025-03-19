@@ -1,14 +1,9 @@
 from dataclasses import dataclass
 from typing import Optional
-from enum import Enum
-
-class QRTypeSeva(Enum):
-    RAW = "RAW"
-    QR_RAW = "QR_RAW"
 
 @dataclass
 class BodyCreateSevaOrder:
-    product_code: Optional[str]
+    product_code: str
     phone: str
     fullname: str
     final_amount: float
@@ -16,9 +11,7 @@ class BodyCreateSevaOrder:
     benefiary_bank_code: str
     benefiary_account_no: str
     comment: str
-    source_account_no: str
-    qr_type: Optional[QRTypeSeva]
-
+    source_account_no: Optional[str] 
 
     def to_dict(self) -> dict:
         return {
@@ -31,7 +24,6 @@ class BodyCreateSevaOrder:
             "benefiary_account_no": self.benefiary_account_no,
             "comment": self.comment,
             "source_account_no": self.source_account_no,
-            "qr_type": self.qr_type.value
         }
 
 

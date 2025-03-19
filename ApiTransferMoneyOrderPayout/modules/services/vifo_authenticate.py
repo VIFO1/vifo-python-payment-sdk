@@ -27,3 +27,4 @@ class VifoAuthenticate(VifoAuthenticateInterface):
         
         endpoint = '/v1/clients/web/admin/login'
         return await self.send_request.send_request('POST', endpoint, headers, body)
+

@@ -9,7 +9,7 @@ class QRTypeReva(Enum):
 @dataclass
 class BodyCreateRevaOrder:
     fullname: str
-    product_code: Optional[str]
+    product_code: str
     distributor_order_number: str
     phone: str
     email: Optional[str]
@@ -33,7 +33,7 @@ class BodyCreateRevaOrder:
             "comment": self.comment,
             "benefiary_account_name": self.benefiary_account_name,
             "bank_detail": self.bank_detail,
-            "qr_type": self.qr_type.value,
+            "qr_type": self.qr_type,
             "end_date": self.end_date,
     }
 

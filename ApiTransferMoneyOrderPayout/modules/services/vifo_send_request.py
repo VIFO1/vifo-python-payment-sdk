@@ -1,4 +1,4 @@
-import requests  # type: ignore
+import requests 
 from typing import Dict, Optional, Any, List, Union
 from modules.interfaces.vifo_send_request_interface import VifoSendRequestInterface
 from modules.interfaces.response_data_interface import ResponseDataInterface
@@ -15,7 +15,8 @@ class VifoSendRequest(VifoSendRequestInterface):
             raise ValueError(f"Invalid environment: {env}")
 
     async def send_request(self, method: str, endpoint: str, headers: Dict[str, Any], body: Dict[str, Any]) -> ResponseDataInterface:
-        url = f"{self.base_url}{endpoint}"
+        url = endpoint if endpoint.startswith("http") else f"{self.base_url}{endpoint}"
+
         try:
             if method.upper() == 'GET':
                 response = requests.request(method, url, headers=headers)
