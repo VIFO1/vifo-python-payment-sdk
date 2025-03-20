@@ -40,7 +40,6 @@ def vifo_webhook():
     except Exception as e:
         return jsonify({"errors": [str(e)]}), 400
 
-     # Kiểm tra action_name bằng Enum
     try:
         action = WebhookActionName(body_obj.action_name)
     except ValueError:
@@ -51,9 +50,14 @@ def vifo_webhook():
     if request_signature != signature:
         return jsonify({"errors": ["Invalid signature"]}), 401
     
+    if body_obj.action_name == "NEW_PAYMENT":
+        print("==== REVA ====")
+    else:
+        print("==== SEVA ====")
+        
     print(json.dumps(body_obj.to_dict(), indent=2))
 
-    return jsonify({"status": "success"}), 201  
+    return jsonify({"status": "success"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
