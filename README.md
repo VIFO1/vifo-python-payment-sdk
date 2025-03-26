@@ -4,6 +4,27 @@ Python SDK finance of VIFO
 ## Purpose
 This Python file uses services from VifoServiceFactory to perform banking, money transfer and other requests. The following guide provides detailed information on how to use and understand the functions of the code.
 
+## Run Pytest
+```python
+cd vifo-python-payment-sdk\ApiTransferMoneyOrderPayout
+pytest -v tests/ 
+```
+## Run Any Test
+```python
+cd vifo-python-payment-sdk\ApiTransferMoneyOrderPayout
+python -m tests.<test_name>
+```
+## Run WebHook
+```python
+cd vifo-python-payment-sdk\ApiTransferMoneyOrderPayout
+python app.py
+
+#New terminal
+cd vifo-python-payment-sdk\ApiTransferMoneyOrderPayout
+python -m tests.vifo_webhook_test
+```
+
+
 ## Requirements
 
 - **Python**: Version 3.7 or higher.
